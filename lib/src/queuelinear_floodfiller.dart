@@ -37,11 +37,11 @@ class QueueLinearFloodFiller {
     }
   }
 
-  void setTargetColor(int targetColor) {
-    _startColor[0] = img.getRed(targetColor);
-    _startColor[1] = img.getGreen(targetColor);
-    _startColor[2] = img.getBlue(targetColor);
-    _startColor[3] = img.getAlpha(targetColor);
+  void setTargetColor(Color targetColor) {
+    _startColor[0] = targetColor.red;
+    _startColor[1] = targetColor.green;
+    _startColor[2] = targetColor.blue;
+    _startColor[3] = targetColor.alpha;
   }
 
   void setTolerance(int value) {
@@ -71,11 +71,17 @@ class QueueLinearFloodFiller {
 
     if (_startColor[0] == 0) {
       // ***Get starting color.
-      int startPixel = image!.getPixelSafe(x, y);
+      var pixelColor = image!.getPixelCubic(x, y);
+      Color startPixel = Color.fromARGB(
+        pixelColor.a.toInt(),
+        pixelColor.r.toInt(),
+        pixelColor.g.toInt(),
+        pixelColor.b.toInt(),
+      );
 
-      _startColor[0] = img.getRed(startPixel);
-      _startColor[1] = img.getGreen(startPixel);
-      _startColor[2] = img.getBlue(startPixel);
+      _startColor[0] = startPixel.red;
+      _startColor[1] = startPixel.green;
+      _startColor[2] = startPixel.blue;
     }
 
     // ***Do first call to floodfill.
@@ -107,9 +113,7 @@ class QueueLinearFloodFiller {
         // *Start Fill Downwards
         // if we're not below the bottom of the bitmap and the pixel
         // below this one is within the color tolerance
-        if (range.y < (_height - 1) &&
-            (!_pixelsChecked![downPxIdx]) &&
-            _checkPixel(i, downY)) {
+        if (range.y < (_height - 1) && (!_pixelsChecked![downPxIdx]) && _checkPixel(i, downY)) {
           _linearFill(i, downY);
         }
 
@@ -133,7 +137,7 @@ class QueueLinearFloodFiller {
     while (true) {
       // **fill with the color
       //pixels[pxIdx] = _fillColor;
-      image?.setPixelSafe(lFillLoc, y, _fillColor);
+      image?.setPixelR(lFillLoc, y, _fillColor);
 
       // **indicate that this pixel has already been checked and filled
       _pixelsChecked![pxIdx] = true;
@@ -143,9 +147,7 @@ class QueueLinearFloodFiller {
       pxIdx--; // de-increment pixel index
 
       // **exit loop if we're at edge of bitmap or color area
-      if (lFillLoc < 0 ||
-          (_pixelsChecked![pxIdx]) ||
-          !_checkPixel(lFillLoc, y)) {
+      if (lFillLoc < 0 || (_pixelsChecked![pxIdx]) || !_checkPixel(lFillLoc, y)) {
         break;
       }
     }
@@ -158,7 +160,7 @@ class QueueLinearFloodFiller {
 
     while (true) {
       // **fill with the color
-      image?.setPixelSafe(rFillLoc, y, _fillColor);
+      image?.setPixelR(rFillLoc, y, _fillColor);
 
       // **indicate that this pixel has already been checked and filled
       _pixelsChecked![pxIdx] = true;
@@ -168,9 +170,7 @@ class QueueLinearFloodFiller {
       pxIdx++; // increment pixel index
 
       // **exit loop if we're at edge of bitmap or color area
-      if (rFillLoc >= _width ||
-          _pixelsChecked![pxIdx] ||
-          !_checkPixel(rFillLoc, y)) {
+      if (rFillLoc >= _width || _pixelsChecked![pxIdx] || !_checkPixel(rFillLoc, y)) {
         break;
       }
     }
@@ -183,11 +183,11 @@ class QueueLinearFloodFiller {
 
   // Sees if a pixel is within the color tolerance range.
   bool _checkPixel(int x, int y) {
-    int pixelColor = image!.getPixelSafe(x, y);
-    int red = img.getRed(pixelColor);
-    int green = img.getGreen(pixelColor);
-    int blue = img.getBlue(pixelColor);
-    int alpha = img.getAlpha(pixelColor);
+    var pixelColor = image!.getPixelCubic(x, y);
+    int red = pixelColor.r.toInt();
+    int green = pixelColor.g.toInt();
+    int blue = pixelColor.b.toInt();
+    int alpha = pixelColor.a.toInt();
 
     return (red >= (_startColor[0] - _tolerance) &&
         red <= (_startColor[0] + _tolerance) &&
@@ -204,7 +204,7 @@ class QueueLinearFloodFiller {
 class _FloodFillRange {
   int startX = -1;
   int endX = -1;
-  int y = - 1;
+  int y = -1;
 
   _FloodFillRange(int startX, int endX, int yPos) {
     this.startX = startX;
