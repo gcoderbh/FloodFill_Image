@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "appium-doctor": "^1.16.2"
+  }
+}

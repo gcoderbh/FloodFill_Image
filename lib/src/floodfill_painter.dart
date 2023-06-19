@@ -17,7 +17,7 @@ class FloodFillPainter extends CustomPainter {
   ValueNotifier<String>? notifier;
   ui.Image image;
   Color fillColor;
-  Function(Offset,ui.Image)? onFloodFillStart;
+  Function(Offset, ui.Image)? onFloodFillStart;
   Function(ui.Image)? onFloodFillEnd;
   Function? onInitialize;
   Function? onRepainted;
@@ -37,7 +37,8 @@ class FloodFillPainter extends CustomPainter {
     ByteData byteData = (await image.toByteData(format: ui.ImageByteFormat.png))!;
     var bytes = byteData.buffer.asUint8List();
     img.Image decoded = img.decodeImage(bytes)!;
-    _filler = QueueLinearFloodFiller(decoded, img.getColor(fillColor.red, fillColor.green, fillColor.blue, fillColor.alpha));
+    _filler =
+        QueueLinearFloodFiller(decoded, img.getColor(fillColor.red, fillColor.green, fillColor.blue, fillColor.alpha));
     onInitialize!();
   }
 
@@ -100,7 +101,7 @@ class FloodFillPainter extends CustomPainter {
 
     int touchColor = _filler!.image!.getPixelSafe(pX, pY);
     if (_checkAvoidColor(touchColor)) return;
-    if (onFloodFillStart != null) onFloodFillStart!(position,image);
+    if (onFloodFillStart != null) onFloodFillStart!(position, image);
 
     _filler?.setTargetColor(touchColor);
     await _filler!.floodFill(pX, pY);
@@ -130,17 +131,13 @@ class FloodFillPainter extends CustomPainter {
     double w = _width ?? image.width.toDouble();
     double h = _height ?? image.height.toDouble();
     paintImage(
-        image,
-        Rect.fromCenter(center: Offset(w * 0.5, h * 0.5), width: w, height: h),
-        canvas,
-        Paint(),
-        BoxFit.fill);
+        image, Rect.fromCenter(center: Offset(w * 0.5, h * 0.5), width: w, height: h), canvas, Paint(), BoxFit.fill);
   }
 
   void paintImage(ui.Image image, Rect outputRect, Canvas canvas, Paint paint, BoxFit fit) {
     final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
-    final FittedSizes sizes  = applyBoxFit(fit, imageSize, outputRect.size);
-    final Rect inputSubrect  = Alignment.center.inscribe(sizes.source, Offset.zero & imageSize);
+    final FittedSizes sizes = applyBoxFit(fit, imageSize, outputRect.size);
+    final Rect inputSubrect = Alignment.center.inscribe(sizes.source, Offset.zero & imageSize);
     final Rect outputSubrect = Alignment.center.inscribe(sizes.destination, outputRect);
     canvas.drawImageRect(image, inputSubrect, outputSubrect, paint);
   }
@@ -150,5 +147,3 @@ class FloodFillPainter extends CustomPainter {
     return true;
   }
 }
-
-
