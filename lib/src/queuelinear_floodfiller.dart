@@ -137,7 +137,8 @@ class QueueLinearFloodFiller {
     while (true) {
       // **fill with the color
       //pixels[pxIdx] = _fillColor;
-      image?.setPixelR(lFillLoc, y, _fillColor);
+      var c = Color(_fillColor.toInt());
+      image?.setPixelRgba(lFillLoc, y, c.red, c.green, c.blue, c.alpha);
 
       // **indicate that this pixel has already been checked and filled
       _pixelsChecked![pxIdx] = true;
@@ -160,7 +161,8 @@ class QueueLinearFloodFiller {
 
     while (true) {
       // **fill with the color
-      image?.setPixelR(rFillLoc, y, _fillColor);
+      var c = Color(_fillColor.toInt());
+      image?.setPixelRgba(rFillLoc, y, c.red, c.green, c.blue, c.alpha);
 
       // **indicate that this pixel has already been checked and filled
       _pixelsChecked![pxIdx] = true;
